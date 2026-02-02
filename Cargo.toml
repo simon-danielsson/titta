@@ -6,7 +6,7 @@ homepage = "https://www.simondanielsson.se"
 exclude = ["media/"]
 license = "MIT"
 readme = "README.md"
-version = "0.1.161"
+version = "0.1.17"
 edition = "2024"
 
 [[bin]]
