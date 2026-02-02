@@ -5,7 +5,7 @@
 - [ ] add support for seeing symlinks (ex: file -> /absolute/path/to/real/location)
 - [ ] add support for name sorting
 - [ ] add flag for previewing permissions
-- [ ] the default view should be 1-4 columns (dep. on viewport width) instead of one long list of files
+- [x] the default view should be 1-4 columns (dep. on viewport width) instead of one long list of files
 - [x] don't show hidden files (files with dot prefix) by default, add it in as an optional flag instead
 
 ## commands
@@ -14,9 +14,9 @@ titta <flags> <optional-path>
 
 - [x] -i : devicons
 - [x] -w : color
+- [x] -a : show hidden files
 - [ ] -t <level> : view as tree, default level = 2
 - [ ] -s : sort by size (also shows file-sizes)
-- [x] -a : show hidden files
 
 - [ ] -n : sort by name (0-9, A-Z)
 - [ ] -c : sort by date/time created (also shows date)

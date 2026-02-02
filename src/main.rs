@@ -1,4 +1,6 @@
+use libc::{STDOUT_FILENO, TIOCGWINSZ, ioctl, winsize};
 use std::fs::{self};
+use std::mem::zeroed;
 use std::panic;
 use std::{io, path::PathBuf};
 
@@ -79,6 +81,7 @@ const fn lookup(key: &str) -> Option<(char, &str)> {
 }
 
 #[allow(unused)]
+#[derive(Clone)]
 struct Item {
     f_type: String,
     is_symlink: bool,
@@ -130,18 +133,37 @@ impl Titta {
     }
 
     fn print_contents(&mut self) {
-        for item in &self.dir_items {
-            let mut ico: String = "".to_string();
-            if self.f_use_devicons {
-                ico = format!("{} ", &item.icon);
-            }
-            let mut col: String = "\x1b[0m".to_string();
-            let col_end: String = "\x1b[0m".to_string();
-            if self.f_with_color {
-                col = format!("{}", &item.color_code);
-            }
+        let cols = 3;
 
-            println!("{col}{ico}{nam}{col_end}", nam = item.name);
+        let max_len: usize = self
+            .dir_items
+            .iter()
+            .map(|item| item.name.chars().count())
+            .max()
+            .unwrap_or(0);
+        let col_width = (max_len * 2) + (max_len / 2);
+
+        for row in self.dir_items.chunks(cols) {
+            for item in row {
+                let mut icon: String = "".to_string();
+                if self.f_use_devicons {
+                    icon = format!("{} ", &item.icon);
+                }
+
+                let mut color: String = "\x1b[0m".to_string();
+                let color_end: String = "\x1b[0m".to_string();
+                if self.f_with_color {
+                    color = format!("{}", &item.color_code);
+                }
+
+                // add spaces for even columns
+                let print =
+                format!("{color}{icon}{name}{color_end}", name = item.name);
+                let space =
+                " ".repeat(col_width.saturating_sub(print.chars().count()));
+                print!("{print}{space}")
+            }
+            println!();
         }
     }
 
@@ -263,4 +285,31 @@ impl Titta {
 
         Ok(())
     }
+}
+
+fn terminal_width() -> Option<u16> {
+    unsafe {
+        let mut ws: winsize = zeroed();
+        if ioctl(STDOUT_FILENO, TIOCGWINSZ, &mut ws) == 0 {
+            Some(ws.ws_col)
+        } else {
+            None
+        }
+    }
+}
+
+fn split_into_four<T>(v: Vec<T>) -> Vec<Vec<T>> {
+    let len = v.len();
+    let base = len / 4;
+    let remainder = len % 4;
+
+    let mut iter = v.into_iter();
+    let mut result = Vec::with_capacity(4);
+
+    for i in 0..4 {
+        let size = base + if i < remainder { 1 } else { 0 };
+        result.push(iter.by_ref().take(size).collect());
+    }
+
+    result
 }

@@ -1,13 +1,17 @@
 [package]
 name = "titta"
-description = "Alternative to ls, built in Rust."
+description = "An alternative to ls built in Rust."
 repository = "https://github.com/simon-danielsson/titta"
 homepage = "https://www.simondanielsson.se"
 exclude = ["media/"]
 license = "MIT"
 readme = "README.md"
-version = "0.1.13"
+version = "0.1.15"
 edition = "2024"
+
+[[bin]]
+name = "ta"
+path = "src/main.rs"
 
 [profile.release]
 lto = true
@@ -16,3 +20,4 @@ panic = "abort"
 strip = true
 
 [dependencies]
+libc = "0.2.180"
