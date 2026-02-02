@@ -27,6 +27,7 @@ const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     ("js", '', "\x1b[33m"),
     ("c", '', "\x1b[36m"),
     ("toml", '', "\x1b[31m"),
+    ("typ", '', "\x1b[36m"),
     // images
     ("png", '', "\x1b[32m"),
     ("jpg", '', "\x1b[32m"),
@@ -40,8 +41,11 @@ const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     ("mp3", '', "\x1b[35m"),
     // text & pdf
     ("txt", '', "\x1b[37m"),
-    ("md", '', "\x1b[37m"),
-    ("pdf", '', "\x1b[37m"),
+    ("md", '', "\x1b[35m"),
+    ("pdf", '', "\x1b[31m"),
+    // font
+    ("ttf", '', "\x1b[37m"),
+    ("otf", '', "\x1b[37m"),
 ];
 
 /// helper: lookup()
@@ -74,10 +78,12 @@ const fn lookup(key: &str) -> Option<(char, &str)> {
     None
 }
 
+#[allow(unused)]
 struct Item {
     f_type: String,
     is_symlink: bool,
     is_dir: bool,
+    is_hidden: bool,
     icon: char,
     color_code: String,
     name: String,
@@ -102,6 +108,7 @@ struct Titta {
     dir_items: Vec<Item>,
     f_use_devicons: bool,
     f_with_color: bool,
+    f_show_hidden: bool,
 }
 
 impl Titta {
@@ -118,6 +125,7 @@ impl Titta {
             // Flags
             f_use_devicons: false,
             f_with_color: false,
+            f_show_hidden: false,
         }
     }
 
@@ -167,6 +175,7 @@ impl Titta {
             let is_symlink = opath.as_mut().unwrap().path().is_symlink();
             let is_dir = opath.as_mut().unwrap().path().is_dir();
             let name = opath.as_mut().unwrap().file_name().display().to_string();
+            let mut is_hidden = false;
 
             // icons & color codes
 
@@ -185,13 +194,24 @@ impl Titta {
                 };
             }
 
-            // push
+            // hidden files
+            if name.chars().nth(0) == Some('.') {
+                is_hidden = true;
+            }
+            // skip hidden files if show_hidden flag is not set
+            if self.f_show_hidden == false {
+                if is_hidden == true {
+                    continue;
+                }
+            }
 
+            // push
             self.dir_items.push(Item {
                 f_type: f_type.clone(),
                 icon,
                 color_code: color_code.to_string(),
                 is_dir,
+                is_hidden,
                 is_symlink,
                 name,
                 abs_path: opath.as_mut().unwrap().path(),
@@ -222,6 +242,10 @@ impl Titta {
                 }
                 "-w" => {
                     self.f_with_color = true;
+                    continue;
+                }
+                "-a" => {
+                    self.f_show_hidden = true;
                     continue;
                 }
                 _ => break,

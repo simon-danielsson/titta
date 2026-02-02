@@ -54,6 +54,7 @@ titta <flags> <optional path>
 flags:
 -i : devicons
 -w : color
+-a : show hidden files
 
 ```
    
