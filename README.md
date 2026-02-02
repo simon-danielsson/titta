@@ -49,7 +49,7 @@ cargo install titta
     
 ``` bash
 
-ta <flags> <optional path>
+titta <flags> <optional path>
 
 flags:
 -i : devicons
