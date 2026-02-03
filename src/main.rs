@@ -53,7 +53,7 @@ impl Titta {
                 "ERROR: The current working directory could not be identified",
             ),
             dir_items: Vec::new(),
-            // Flags
+            // flags
             f_use_devicons: false,
             f_with_color: false,
             f_show_hidden: false,
