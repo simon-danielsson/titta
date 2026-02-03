@@ -1,4 +1,5 @@
-use std::fs::{self};
+use std::fs::{self, Metadata};
+use std::os::unix::fs::PermissionsExt;
 use std::panic;
 use std::{io, path::PathBuf};
 
@@ -12,6 +13,7 @@ struct Item {
     is_symlink: bool,
     is_dir: bool,
     is_hidden: bool,
+    is_exec: bool,
     icon: char,
     color_code: String,
     name: String,
@@ -37,6 +39,7 @@ struct Titta {
     f_use_devicons: bool,
     f_with_color: bool,
     f_show_hidden: bool,
+    f_show_executables: bool,
 }
 
 impl Titta {
@@ -54,6 +57,7 @@ impl Titta {
             f_use_devicons: false,
             f_with_color: false,
             f_show_hidden: false,
+            f_show_executables: false,
         }
     }
 
@@ -80,8 +84,13 @@ impl Titta {
                     color = format!("{}", &item.color_code);
                 }
 
-                let print =
-                format!("{color}{icon}{name}{color_end}", name = item.name);
+                // add extra icon for exe sh files
+                let mut name = item.name.clone();
+                if item.is_exec && self.f_show_executables {
+                    name = format!("{name}*")
+                }
+
+                let print = format!("{color}{icon}{name}{color_end}");
                 let len =
                 (format!("{icon}{name}", name = item.name)).chars().count();
 
@@ -94,6 +103,11 @@ impl Titta {
             }
             println!();
         }
+    }
+
+    fn is_executable(&mut self, metadata: &Metadata) -> bool {
+        let permissions = metadata.permissions();
+        return metadata.is_file() && permissions.mode() & 0o111 != 0;
     }
 
     fn get_contents(&mut self) -> io::Result<()> {
@@ -123,10 +137,21 @@ impl Titta {
                     .unwrap_or("")
                     .to_string();
             }
-            let is_symlink = opath.as_mut().unwrap().path().is_symlink();
-            let is_dir = opath.as_mut().unwrap().path().is_dir();
+
             let name = opath.as_mut().unwrap().file_name().display().to_string();
-            let mut is_hidden = false;
+
+            let mut is_exec: bool = false;
+            let mut is_symlink: bool = false;
+            let mut is_dir: bool = false;
+
+            if let Ok(metadata) = opath.as_mut().unwrap().metadata() {
+                is_exec = self.is_executable(&metadata);
+                is_symlink = metadata.is_symlink();
+                is_dir = metadata.is_dir();
+                // metadata.modified()
+                // metadata.accessed()
+                // metadata.size()
+            }
 
             // icons & color codes
             let mut color_code: &str = lookup("").unwrap().1;
@@ -143,6 +168,9 @@ impl Titta {
                 };
             }
 
+            // hidden files
+            let mut is_hidden = false;
+
             if is_dir && name.chars().nth(0) == Some('.') {
                 is_hidden = true;
                 if let Some(ic) = lookup("hidden_dir") {
@@ -151,7 +179,6 @@ impl Titta {
                 };
             }
 
-            // hidden files
             if !is_dir && name.chars().nth(0) == Some('.') {
                 is_hidden = true;
             }
@@ -171,6 +198,7 @@ impl Titta {
                 is_dir,
                 is_hidden,
                 is_symlink,
+                is_exec,
                 name,
                 abs_path: opath.as_mut().unwrap().path(),
             });
@@ -204,6 +232,10 @@ impl Titta {
                 }
                 "-a" => {
                     self.f_show_hidden = true;
+                    continue;
+                }
+                "-e" => {
+                    self.f_show_executables = true;
                     continue;
                 }
                 _ => break,

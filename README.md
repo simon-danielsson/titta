@@ -3,8 +3,7 @@
 </h1>
   
 <p align="center">
-  <em>An alternative to ls <br>
-built in Rust.</em>
+  <em>An alternative to ls built in Rust.</em>
 </p>
   
 <p align="center">
@@ -55,6 +54,7 @@ flags:
 -i : devicons
 -w : color
 -a : show hidden files
+-e : show which .sh files are executable with '*' suffix
 
 ```
    
