@@ -129,16 +129,22 @@ impl Titta {
             let mut is_hidden = false;
 
             // icons & color codes
-
-            let mut color_code: &str = lookup("unknown").unwrap().1;
-            let mut icon: char = lookup("unknown").unwrap().0;
+            let mut color_code: &str = lookup("").unwrap().1;
+            let mut icon: char = lookup("").unwrap().0;
             if !(f_type == "") {
                 if let Some(ic) = lookup(&f_type) {
                     icon = ic.0;
                     color_code = ic.1;
                 };
+            } else {
+                if let Some(ic) = lookup("unknown") {
+                    icon = ic.0;
+                    color_code = ic.1;
+                };
             }
+
             if is_dir && name.chars().nth(0) == Some('.') {
+                is_hidden = true;
                 if let Some(ic) = lookup("hidden_dir") {
                     icon = ic.0;
                     color_code = ic.1;
@@ -146,9 +152,10 @@ impl Titta {
             }
 
             // hidden files
-            if name.chars().nth(0) == Some('.') {
+            if !is_dir && name.chars().nth(0) == Some('.') {
                 is_hidden = true;
             }
+
             // skip hidden files if show_hidden flag is not set
             if self.f_show_hidden == false {
                 if is_hidden == true {

@@ -16,7 +16,8 @@ pub const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     // general
     ("dir", '󰉖', "\x1b[34m"),
     ("hidden_dir", '󱞋', "\x1b[34m"),
-    ("unknown", '', "\x1b[0"),
+    ("", '', "\x1b[0m"),
+    ("log", '', "\x1b[0m"),
     // dev
     ("rs", '', "\x1b[31m"),
     ("py", '', "\x1b[33m"),
@@ -24,12 +25,19 @@ pub const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     ("js", '', "\x1b[33m"),
     ("c", '', "\x1b[36m"),
     ("toml", '', "\x1b[31m"),
+    ("json", '', "\x1b[31m"),
     ("typ", '', "\x1b[36m"),
     // images
     ("png", '', "\x1b[32m"),
     ("jpg", '', "\x1b[32m"),
     ("gif", '', "\x1b[32m"),
     ("rw2", '', "\x1b[32m"),
+    // video
+    ("mp4", '', "\x1b[35m"),
+    ("mkv", '', "\x1b[35m"),
+    ("mov", '', "\x1b[35m"),
+    ("avi", '', "\x1b[35m"),
+    ("webm", '', "\x1b[35m"),
     // audio
     ("wav", '', "\x1b[35m"),
     ("flac", '', "\x1b[35m"),
@@ -55,8 +63,8 @@ pub const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     ("pkg", '󰏗', "\x1b[33m"),
     ("dmg", '󰏗', "\x1b[33m"),
     // font
-    ("ttf", '', "\x1b[0"),
-    ("otf", '', "\x1b[0"),
+    ("ttf", '', "\x1b[0m"),
+    ("otf", '', "\x1b[0m"),
 ];
 
 /// helper: lookup()
