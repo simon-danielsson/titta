@@ -67,6 +67,15 @@ pub const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     ("txt", '', ansi!(Reset)),
     ("md", '', ansi!(Magenta)),
     ("pdf", '', ansi!(Cyan)),
+    // spreadsheet
+    ("xlsx", '󰱿', ansi!(Cyan)),
+    ("xls", '󰱿', ansi!(Cyan)),
+    ("gsheet", '󰱿', ansi!(Cyan)),
+    ("numbers", '󰱿', ansi!(Cyan)),
+    ("csv", '󰱿', ansi!(Cyan)),
+    ("tsv", '󰱿', ansi!(Cyan)),
+    ("ods", '󰱿', ansi!(Cyan)),
+    ("xml", '󰱿', ansi!(Cyan)),
     // archives
     ("zip", '', ansi!(Orange)),
     ("tar", '', ansi!(Orange)),
