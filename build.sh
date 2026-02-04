@@ -2,8 +2,8 @@
 
 cargo build --release
 # cargo run --release -- -e -i -w -a ~/dev/rust/titta
-cargo run --release -- help
-# cargo run --bin "ta tree"
+# cargo run --release -- help
+cargo run --release -- tree 2 -e -i
 # cargo run --release -- -i -w -a ~
 # /Users/simondanielsson/dev/rust/titta/target/release/titta -i -w ~
 # /Users/simondanielsson/dev/rust/titta/target/release/titta -i -w ~/dev/rust/

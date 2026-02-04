@@ -1,4 +1,5 @@
 use std::fs::{self, Metadata};
+use std::num::ParseIntError;
 use std::os::unix::fs::PermissionsExt;
 use std::panic;
 use std::{io, path::PathBuf};
@@ -59,6 +60,7 @@ struct Titta {
     f_show_hidden: bool,
     f_show_executables: bool,
     s_view_as_tree: bool,
+    sf_tree_lvl: i32,
     s_help: bool,
 }
 
@@ -79,6 +81,7 @@ impl Titta {
             f_show_hidden: false,
             f_show_executables: false,
             s_view_as_tree: false,
+            sf_tree_lvl: 1,
             s_help: false,
         }
     }
@@ -241,55 +244,36 @@ impl Titta {
         Ok(())
     }
 
-    /// helper: parse_args()
-    fn next_arg(&mut self) -> io::Result<String> {
-        let mut arg: String = String::new();
-        if let Some(arg_p) = std::env::args().nth(self.arg_counter) {
-            arg = arg_p
-        }
-        self.arg_counter += 1;
-        Ok(arg)
-    }
+    fn parse_args(&mut self) -> std::io::Result<()> {
+        let mut it = std::env::args().skip(1); // skip program name
 
-    fn parse_args(&mut self) -> io::Result<()> {
-        loop {
-            let arg = self.next_arg()?;
-
+        while let Some(arg) = it.next() {
             match arg.as_str() {
                 "tree" => {
                     self.s_view_as_tree = true;
-                    continue;
-                }
-                "help" => {
-                    self.s_help = true;
-                    continue;
-                }
-                "-i" => {
-                    self.f_use_devicons = true;
-                    continue;
-                }
-                "-w" => {
-                    self.f_with_color = true;
-                    continue;
-                }
-                "-a" => {
-                    self.f_show_hidden = true;
-                    continue;
-                }
-                "-e" => {
-                    self.f_show_executables = true;
-                    continue;
-                }
-                _ => break,
-            };
-        }
 
-        if let Some(path) = std::env::args().nth(self.arg_counter - 1) {
-            self.opt_dir = PathBuf::from(path);
-            if self.opt_dir.exists() {
-                self.use_opt_dir = true;
-            } else {
-                panic!("ERROR: Directory doesn't exist")
+                    // use next if it exists and parses as i32, else default to 1
+                    self.sf_tree_lvl = it
+                        .next()
+                        .as_deref()
+                        .unwrap_or("1")
+                        .parse::<i32>()
+                        .unwrap_or(1);
+                }
+                "help" => self.s_help = true,
+                "-i" => self.f_use_devicons = true,
+                "-w" => self.f_with_color = true,
+                "-a" => self.f_show_hidden = true,
+                "-e" => self.f_show_executables = true,
+                other => {
+                    self.opt_dir = PathBuf::from(other);
+                    if self.opt_dir.exists() {
+                        self.use_opt_dir = true;
+                    } else {
+                        panic!("ERROR: Directory doesn't exist");
+                    }
+                    break; // stop after first positional
+                }
             }
         }
 
