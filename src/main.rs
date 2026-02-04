@@ -1,7 +1,5 @@
 use std::fs::{self, Metadata};
-use std::num::ParseIntError;
 use std::os::unix::fs::PermissionsExt;
-use std::panic;
 use std::{io, path::PathBuf};
 
 mod constants;
