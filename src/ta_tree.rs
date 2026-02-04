@@ -67,7 +67,7 @@ impl Titta {
 
         for (idx, entry) in entries.into_iter().enumerate() {
             let is_last = idx + 1 == len;
-            let branch = if is_last { "└── " } else { "├── " };
+            let branch = if is_last { "╰── " } else { "├── " };
 
             let path = entry.path();
             let name_raw = entry.file_name().to_string_lossy().to_string();
