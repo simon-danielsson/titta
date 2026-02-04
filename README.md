@@ -47,15 +47,28 @@ cargo install titta
 ## 💻 Usage
     
 ``` bash
-
 ta <flags> <optional path>
-
-flags:
+```
+  
+### Flags
+  
+``` bash
 -i : devicons
 -w : color
 -a : show hidden files
 -e : show which .sh files are executable with '*' suffix
+```
+  
+### Subcommands
+  
+``` bash
+tree <level> : view as tree hierarchy
+    example usage:
+    $ ta tree 3 -i -a ~/Downloads/
 
+help : view available flags, subcommands etc.
+    example usage:
+    $ ta help
 ```
    
 ---

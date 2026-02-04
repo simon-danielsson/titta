@@ -2,12 +2,36 @@
 
 ## todo
 
+**general**
+
 - [ ] add support for seeing symlinks (ex: file -> /absolute/path/to/real/location)
 - [ ] add support for name sorting
 - [ ] add flag for previewing permissions
 - [x] add "executable" sign to .sh files
 - [x] the default view should be 1-4 columns (dep. on viewport width) instead of one long list of files
 - [x] don't show hidden files (files with dot prefix) by default, add it in as an optional flag instead
+
+---
+
+**special icons**
+
+If file && name contains:
+- [ ] LICENSE:
+- [ ] README:
+
+If file && has extension:
+- [ ] .conf: 
+
+If dir && name contains:
+- [ ] Downloads:
+- [ ] src: 
+- [ ] Library:
+- [ ] Pictures:
+- [ ] Music:
+- [ ] Applications:
+- [ ] .config:
+
+---
 
 ## commands
 
@@ -22,6 +46,8 @@ titta <flags> <optional-path>
 - [ ] -n : sort by name (0-9, A-Z)
 - [ ] -c : sort by date/time created (also shows date)
 - [ ] -a : sort by date/time last accessed (also shows date)
+
+---
 
 ## the manpage for regular unix ls
 
