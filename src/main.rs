@@ -257,7 +257,10 @@ impl Titta {
                         .parse::<i32>()
                         .unwrap_or(1);
                 }
-                "help" => self.s_help = true,
+                "help" => {
+                    self.s_help = true;
+                    return Ok(());
+                }
                 "-i" => self.f_use_devicons = true,
                 "-w" => self.f_with_color = true,
                 "-a" => self.f_show_hidden = true,
