@@ -82,8 +82,7 @@ impl Titta {
             s_help: false,
         }
     }
-    // add function here to format items once and then this can be used in ta tree too.
-    // add formatted string as a new field to the item struct for more portability
+
     fn format_items(&mut self) {
         for item in self.dir_items.iter_mut() {
             let mut icon: String = "".to_string();
