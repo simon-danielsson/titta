@@ -46,6 +46,7 @@ pub const FILETYPE_ATTR: &[(&str, char, &str)] = &[
     ("toml", '', ansi!(Red)),
     ("json", '', ansi!(Red)),
     ("typ", '', ansi!(Cyan)),
+    ("lua", '', ansi!(Blue)),
     // images
     ("png", '', ansi!(Magenta)),
     ("jpg", '', ansi!(Magenta)),
