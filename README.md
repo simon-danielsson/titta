@@ -9,7 +9,6 @@
 <p align="center">
     <img src="https://img.shields.io/crates/v/titta?style=flat-square&color=blueviolet&link=https%3A%2F%2Fcrates.io%2Fcrates%2Ftitta" alt="Crates.io version" />
     <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/Rust-stable-orange?style=flat-square" alt="Rust" />
   <img src="https://img.shields.io/github/last-commit/simon-danielsson/titta/main?style=flat-square&color=blue" alt="Last commit" />
 </p>
   
