@@ -1,6 +1,6 @@
-<h1 align="center">
-    Titta
-</h1>
+<p align="center">
+    <img src="media/logo.png" alt="titta" width="200"/>
+</p>
   
 <p align="center">
   <em>An alternative to ls built in Rust.</em>

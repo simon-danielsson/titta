@@ -2,3 +2,4 @@
 *.c
 /references
 /references/*
+            *.psd
