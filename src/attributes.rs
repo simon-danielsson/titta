@@ -152,8 +152,9 @@ impl fmt::Display for Item {
                 (clr!(Blue), format!("{i} {n}", i = "󱞋", n = self.name))
             }
 
+            // *brakoll - d: change color of rust items to orange, p: 100, t: fix, s: closed
             // dev
-            FileType::Rs => (clr!(Red), format!("{i} {n}", i = "", n = self.name)),
+            FileType::Rs => (clr!(Orange), format!("{i} {n}", i = "", n = self.name)),
             FileType::Js => (clr!(Yellow), format!("{i} {n}", i = "", n = self.name)),
             FileType::Py => (clr!(Yellow), format!("{i} {n}", i = "", n = self.name)),
             FileType::Sh => (clr!(Green), format!("{i} {n}", i = "", n = self.name)),
