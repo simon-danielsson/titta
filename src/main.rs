@@ -19,6 +19,7 @@ struct Item {
     abs_path: PathBuf,
 }
 
+// *brakoll - d: new version after overhaul, p: 0, t: feature, s: closed
 fn main() -> io::Result<()> {
     let mut titta: Titta = Titta::new();
 
