@@ -42,7 +42,6 @@ $ ta <flags> <optional path>
 ### Flags
   
 ``` bash
--w : color
 -a : show hidden files
 ```
   

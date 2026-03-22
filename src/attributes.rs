@@ -1,6 +1,10 @@
 use std::fmt;
 
-use crate::{Item, format};
+use crate::{
+    Item,
+    config::{self, ConfigVars},
+    format,
+};
 
 // *brakoll - d: improve filetype attributes, p: 100, t: refactor, s: closed
 macro_rules! file_types {
@@ -114,15 +118,16 @@ pub enum EasyColor {
 }
 impl fmt::Display for EasyColor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let cvars = config::get().unwrap();
         let color = match self {
-            EasyColor::Red => "#FF0000",
-            EasyColor::Green => "#00FF00",
-            EasyColor::Yellow => "#FFFF00",
-            EasyColor::Blue => "#0000FF",
-            EasyColor::Magenta => "#FF00FF",
-            EasyColor::Cyan => "#00FFFF",
-            EasyColor::Orange => "#FFA500",
-            EasyColor::White => "#FFFFFF",
+            EasyColor::Red => cvars.red,
+            EasyColor::Green => cvars.green,
+            EasyColor::Yellow => cvars.yellow,
+            EasyColor::Blue => cvars.blue,
+            EasyColor::Magenta => cvars.magenta,
+            EasyColor::Cyan => cvars.cyan,
+            EasyColor::Orange => cvars.orange,
+            EasyColor::White => cvars.white,
         };
 
         write!(f, "{}", color)
@@ -225,4 +230,3 @@ impl fmt::Display for Item {
         write!(f, "{}", format::apply_color(color, content))
     }
 }
-

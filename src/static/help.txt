@@ -1,0 +1,13 @@
+General usage:
+$ ta <flags> <optional-path>
+
+== Flags ==
+-a - show hidden files
+
+== Subcommands ==
+tree <level> - view as tree hierarchy
+    example usage:
+    $ ta tree 3 -i -a ~/Downloads/
+help - view available flags, subcommands etc.
+    example usage:
+    $ ta help

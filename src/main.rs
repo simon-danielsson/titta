@@ -3,10 +3,12 @@ use std::os::unix::fs::PermissionsExt;
 use std::{io, path::PathBuf};
 
 mod attributes;
+mod config;
 mod format;
 mod help;
 mod ta_tree;
 use crate::attributes::FileType;
+use crate::config::ConfigVars;
 
 #[allow(dead_code)]
 #[derive(Clone)]
@@ -20,6 +22,7 @@ struct Item {
 
 fn main() -> io::Result<()> {
     let mut titta: Titta = Titta::new();
+
     titta.parse_args()?;
 
     if titta.s_help {
@@ -34,7 +37,7 @@ fn main() -> io::Result<()> {
         titta.dir_items.retain(|item| !item.is_hidden);
     }
 
-    // aux cmd: ta tree
+    // tree
     if titta.s_view_as_tree {
         print!("{}", titta.s_view_as_tree()?);
         return Ok(());
@@ -52,7 +55,6 @@ struct Titta {
     opt_dir: PathBuf,
     use_opt_dir: bool,
     dir_items: Vec<Item>,
-    f_with_color: bool,
     f_show_hidden: bool,
     s_view_as_tree: bool,
     sf_tree_lvl: i32,
@@ -69,8 +71,8 @@ impl Titta {
                 "ERROR: The current working directory could not be identified",
             ),
             dir_items: Vec::new(),
+
             // flags
-            f_with_color: false,
             f_show_hidden: false,
             s_view_as_tree: false,
             sf_tree_lvl: 1,
@@ -205,7 +207,6 @@ impl Titta {
                     self.s_help = true;
                     return Ok(());
                 }
-                "-w" => self.f_with_color = true,
                 "-a" => self.f_show_hidden = true,
                 other => {
                     self.opt_dir = PathBuf::from(other);

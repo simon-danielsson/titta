@@ -1,6 +1,6 @@
 use crate::Titta;
 
-const HELP_BODY: &str = include_str!("help_body.txt");
+const HELP_BODY: &str = include_str!("./static/help.txt");
 
 // app info
 const APP_NAME: &str = env!("CARGO_PKG_NAME");
