@@ -2,6 +2,7 @@ use crate::Titta;
 // *brakoll - d: update readme and help with new details after overhaul, p: 100, t: docs, s: closed
 // *brakoll - d: add new deps to readme, p: , t: docs, s: closed
 // *brakoll - d: fix typo in readme, p: , t: docs, s: closed
+// *brakoll - d: change size of logo in readme, p: , t: docs, s: closed
 
 const HELP_BODY: &str = include_str!("./static/help.txt");
 

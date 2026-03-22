@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="media/logo.png" alt="titta" width="200"/>
+    <img src="media/logo.png" alt="titta" width="180"/>
 </p>
   
 <p align="center">
