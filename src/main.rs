@@ -2,25 +2,22 @@ use std::fs::{self, Metadata};
 use std::os::unix::fs::PermissionsExt;
 use std::{io, path::PathBuf};
 
+mod attributes;
 mod constants;
 mod file_attr;
+mod format;
 mod help;
 mod ta_tree;
-use crate::file_attr::*;
+use crate::attributes::FileType;
 
-#[allow(unused)]
 #[derive(Clone)]
 struct Item {
-    f_type: String,
+    f_type: FileType,
     is_symlink: bool,
-    is_dir: bool,
-    is_hidden: bool,
     is_exec: bool,
-    icon: char,
-    color_code: String,
+    is_hidden: bool,
     name: String,
     abs_path: PathBuf,
-    format: String,
 }
 
 fn main() -> io::Result<()> {
@@ -33,7 +30,6 @@ fn main() -> io::Result<()> {
     }
 
     titta.get_contents()?;
-    titta.format_items();
 
     // aux cmd: ta tree
     if titta.s_view_as_tree {
@@ -83,23 +79,6 @@ impl Titta {
         }
     }
 
-    fn format_items(&mut self) {
-        for item in self.dir_items.iter_mut() {
-            let mut icon: String = "".to_string();
-            if self.f_use_devicons {
-                icon = format!("{} ", &item.icon);
-            }
-
-            let color_end: String = "\x1b[0m".to_string();
-            let mut color = color_end.clone();
-            if self.f_with_color {
-                color = item.color_code.clone();
-            }
-
-            item.format = format!("{color}{icon}{name}{color_end}", name = item.name);
-        }
-    }
-
     // *brakoll - d: make columns in print_contents function more dynamic to terminal size, p: 100, t: fix, s: closed
     fn print_contents(&mut self) {
         use terminal_size::{Width, terminal_size};
@@ -126,6 +105,13 @@ impl Titta {
 
         // max 4 col and min 1
         let cols = (term_w / col_w).clamp(1, 4);
+        // *brakoll - d: add check for if show_hidden flag is active and filter hidden directories and dotfiles, p: 100, t: refactor, s: open
+
+        // if self.f_show_hidden == false {
+        //     if is_hidden == true {
+        //         continue;
+        //     }
+        // }
 
         // print
         for row in self.dir_items.chunks(cols) {
@@ -159,10 +145,10 @@ impl Titta {
         let paths = fs::read_dir(dir)?;
         for path in paths {
             let mut opath = path;
-            let f_type: String;
+            let mut f_type: FileType;
 
             if opath.as_mut().unwrap().path().is_dir() {
-                f_type = "dir".to_string();
+                f_type = FileType::Directory;
             } else {
                 f_type = opath
                     .as_mut()
@@ -170,15 +156,14 @@ impl Titta {
                     .path()
                     .extension()
                     .and_then(|ext| ext.to_str())
-                    .unwrap_or("")
-                    .to_string();
+                    .map(FileType::from_ext)
+                    .unwrap_or(FileType::Unknown);
             }
 
             let mut name = opath.as_mut().unwrap().file_name().display().to_string();
 
             let mut is_exec: bool = false;
             let mut is_symlink: bool = false;
-            let mut is_dir: bool = false;
 
             if let Ok(metadata) = opath.as_mut().unwrap().metadata() {
                 is_exec = self.is_executable(&metadata);
@@ -187,64 +172,27 @@ impl Titta {
                 }
 
                 is_symlink = metadata.is_symlink();
-                is_dir = metadata.is_dir();
-                // metadata.modified()
-                // metadata.accessed()
-                // metadata.size()
             }
 
-            // icons & color codes
-            let mut color_code: &str = lookup("").unwrap().1;
-            let mut icon: char = lookup("").unwrap().0;
-            if !(f_type == "") {
-                if let Some(ic) = lookup(&f_type) {
-                    icon = ic.0;
-                    color_code = ic.1;
-                };
-            } else {
-                if let Some(ic) = lookup("unknown") {
-                    icon = ic.0;
-                    color_code = ic.1;
-                };
-            }
-
-            // hidden files
             let mut is_hidden = false;
 
-            if is_dir && name.chars().nth(0) == Some('.') {
-                is_hidden = true;
-                if let Some(ic) = lookup("hidden_dir") {
-                    icon = ic.0;
-                    color_code = ic.1;
-                };
-            }
-
-            if !is_dir && name.chars().nth(0) == Some('.') {
+            if f_type == FileType::Directory && name.chars().nth(0) == Some('.') {
+                f_type = FileType::DirHidden;
                 is_hidden = true;
             }
 
-            // skip hidden files if show_hidden flag is not set
-            if self.f_show_hidden == false {
-                if is_hidden == true {
-                    continue;
-                }
+            if f_type != FileType::Directory && name.chars().nth(0) == Some('.') {
+                is_hidden = true;
             }
-
-            // format placeholder
-            let format: String = "".to_string();
 
             // push
             self.dir_items.push(Item {
-                f_type: f_type.clone(),
-                icon,
-                color_code: color_code.to_string(),
-                is_dir,
-                is_hidden,
+                f_type,
                 is_symlink,
                 is_exec,
+                is_hidden,
                 name,
                 abs_path: opath.as_mut().unwrap().path(),
-                format,
             });
         }
 

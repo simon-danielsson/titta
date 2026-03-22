@@ -23,6 +23,8 @@ panic = "abort"
 strip = true
 
 [dependencies]
+raster = "0.2.0"
+regex = "1.12.3"
 terminal_size = "0.4.3"
 
 
