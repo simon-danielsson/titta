@@ -1,14 +1,14 @@
-use std::fs::{self, Metadata, metadata};
+use std::fs::{self, Metadata};
 use std::os::unix::fs::PermissionsExt;
 use std::{io, path::PathBuf};
 
 mod attributes;
-mod constants;
 mod format;
 mod help;
 mod ta_tree;
 use crate::attributes::FileType;
 
+#[allow(dead_code)]
 #[derive(Clone)]
 struct Item {
     f_type: FileType,
@@ -36,7 +36,7 @@ fn main() -> io::Result<()> {
 
     // aux cmd: ta tree
     if titta.s_view_as_tree {
-        titta.s_view_as_tree()?;
+        print!("{}", titta.s_view_as_tree()?);
         return Ok(());
     }
 
@@ -54,7 +54,6 @@ struct Titta {
     dir_items: Vec<Item>,
     f_with_color: bool,
     f_show_hidden: bool,
-    f_show_executables: bool,
     s_view_as_tree: bool,
     sf_tree_lvl: i32,
     s_help: bool,
@@ -73,7 +72,6 @@ impl Titta {
             // flags
             f_with_color: false,
             f_show_hidden: false,
-            f_show_executables: false,
             s_view_as_tree: false,
             sf_tree_lvl: 1,
             s_help: false,

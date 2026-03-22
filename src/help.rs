@@ -1,4 +1,13 @@
-use crate::{Titta, constants::*};
+use crate::Titta;
+
+const HELP_BODY: &str = include_str!("help_body.txt");
+
+// app info
+const APP_NAME: &str = env!("CARGO_PKG_NAME");
+const APP_VERS: &str = env!("CARGO_PKG_VERSION");
+const APP_REPO: &str = env!("CARGO_PKG_REPOSITORY");
+const APP_DESC: &str = env!("CARGO_PKG_DESCRIPTION");
+const APP_AUTH: &str = env!("CARGO_PKG_AUTHORS");
 
 impl Titta {
     /// subcommand: print help
