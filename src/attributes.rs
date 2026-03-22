@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     Item,
-    config::{self, ConfigVars},
+    config::{self},
     format,
 };
 
@@ -14,6 +14,7 @@ macro_rules! file_types {
         $($variant),*
         }
 
+        #[allow(dead_code)]
         impl FileType {
         pub fn as_str(&self) -> &'static str {
         match self {

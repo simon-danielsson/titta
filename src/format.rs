@@ -2,7 +2,7 @@ use raster::Color;
 use regex::Regex;
 use std::str;
 
-// *brakoll - d: make use of color flag so the user can choose if color is applied, p: 100, t: fix, s: open
+// *brakoll - d: make use of color flag so the user can choose if color is applied, p: 100, t: fix, s: closed
 pub const RESET: &str = "\x1b[m";
 pub const FG: &str = "\x1b[38;2;";
 

@@ -1,10 +1,10 @@
 # === colors ===
 
-red = #ffffff
-green = #ffffff
-yellow = #ffffff
-blue = #ffffff
-magenta = #ffffff
-cyan = #ffffff
-orange = #ffffff
-white = #ffffff
+red = #DF6C74
+green = #99C379
+yellow = #F9E2B0
+blue = #61AFEF
+magenta = #C678DD
+cyan = #87AFAE
+orange = #DAA281
+white = #AAB5C0

@@ -1,4 +1,5 @@
 use crate::Titta;
+// *brakoll - d: update readme and help with new details after overhaul, p: 100, t: docs, s: closed
 
 const HELP_BODY: &str = include_str!("./static/help.txt");
 
@@ -14,6 +15,7 @@ impl Titta {
     pub fn s_help(&mut self) {
         println!("{APP_NAME} v{APP_VERS}");
         println!("{APP_DESC}");
+        println!("{APP_REPO}");
         println!("{APP_AUTH}");
         println!("---");
         println!("{HELP_BODY}");

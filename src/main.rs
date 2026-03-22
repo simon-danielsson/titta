@@ -8,7 +8,6 @@ mod format;
 mod help;
 mod ta_tree;
 use crate::attributes::FileType;
-use crate::config::ConfigVars;
 
 #[allow(dead_code)]
 #[derive(Clone)]

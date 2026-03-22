@@ -57,6 +57,24 @@ help : view available flags, subcommands etc.
     $ ta help
 ```
    
+### Config
+  
+Launch Titta for the first time to generate a default config file:  
+`~/.config/raket/titta`  
+  
+``` conf
+# === colors ===
+
+red = #DF6C74
+green = #99C379
+yellow = #F9E2B0
+blue = #61AFEF
+magenta = #C678DD
+cyan = #87AFAE
+orange = #DAA281
+white = #AAB5C0
+```
+  
 ---
 <div id="deps"></div>
   
