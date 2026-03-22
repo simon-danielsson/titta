@@ -60,7 +60,7 @@ help : view available flags, subcommands etc.
 ### Config
   
 Launch Titta for the first time to generate a default config file:  
-`~/.config/raket/titta`  
+`~/.config/titta/config`  
   
 ``` conf
 # === colors ===
