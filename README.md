@@ -44,7 +44,6 @@ $ ta <flags> <optional path>
 ``` bash
 -w : color
 -a : show hidden files
--e : show which .sh files are executable with '*' suffix
 ```
   
 ### Subcommands
@@ -52,7 +51,7 @@ $ ta <flags> <optional path>
 ``` bash
 tree <level> : view as tree hierarchy
     example usage:
-    $ ta tree 3 -i -a ~/Downloads/
+    $ ta tree 3 -a ~/Downloads/
 
 help : view available flags, subcommands etc.
     example usage:

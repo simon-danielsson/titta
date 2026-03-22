@@ -1,10 +1,9 @@
-use std::fs::{self, Metadata};
+use std::fs::{self, Metadata, metadata};
 use std::os::unix::fs::PermissionsExt;
 use std::{io, path::PathBuf};
 
 mod attributes;
 mod constants;
-mod file_attr;
 mod format;
 mod help;
 mod ta_tree;
@@ -14,7 +13,6 @@ use crate::attributes::FileType;
 struct Item {
     f_type: FileType,
     is_symlink: bool,
-    is_exec: bool,
     is_hidden: bool,
     name: String,
     abs_path: PathBuf,
@@ -117,6 +115,7 @@ impl Titta {
             println!();
         }
     }
+
     fn is_executable(&mut self, metadata: &Metadata) -> bool {
         let permissions = metadata.permissions();
         return metadata.is_file() && permissions.mode() & 0o111 != 0;
@@ -152,12 +151,11 @@ impl Titta {
 
             let mut name = opath.as_mut().unwrap().file_name().display().to_string();
 
-            let mut is_exec: bool = false;
+            // *brakoll - d: remove need for is_exec field, p: 20, t: refactor, s: closed
             let mut is_symlink: bool = false;
 
             if let Ok(metadata) = opath.as_mut().unwrap().metadata() {
-                is_exec = self.is_executable(&metadata);
-                if is_exec {
+                if self.is_executable(&metadata) && f_type == FileType::Sh {
                     name = format!("{name}*");
                 }
 
@@ -179,7 +177,6 @@ impl Titta {
             self.dir_items.push(Item {
                 f_type,
                 is_symlink,
-                is_exec,
                 is_hidden,
                 name,
                 abs_path: opath.as_mut().unwrap().path(),
@@ -212,7 +209,6 @@ impl Titta {
                 }
                 "-w" => self.f_with_color = true,
                 "-a" => self.f_show_hidden = true,
-                "-e" => self.f_show_executables = true,
                 other => {
                     self.opt_dir = PathBuf::from(other);
                     if self.opt_dir.exists() {

@@ -3,7 +3,6 @@ $ ta <flags> <optional-path>
 == Flags ==
 -w - view with color
 -a - show hidden files
--e - show which .sh files are executable with '*' suffix
 == Subcommands ==
 tree <level> - view as tree hierarchy
     example usage:
