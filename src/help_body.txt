@@ -1,7 +1,6 @@
 General usage:
 $ ta <flags> <optional-path>
 == Flags ==
--i - view with devicons
 -w - view with color
 -a - show hidden files
 -e - show which .sh files are executable with '*' suffix

@@ -42,7 +42,6 @@ $ ta <flags> <optional path>
 ### Flags
   
 ``` bash
--i : devicons
 -w : color
 -a : show hidden files
 -e : show which .sh files are executable with '*' suffix

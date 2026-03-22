@@ -145,6 +145,7 @@ impl fmt::Display for Item {
             FileType::DirHidden => {
                 (clr!(Blue), format!("{i} {n}", i = "󱞋", n = self.name))
             }
+
             // dev
             FileType::Rs => (clr!(Red), format!("{i} {n}", i = "", n = self.name)),
             FileType::Js => (clr!(Yellow), format!("{i} {n}", i = "", n = self.name)),
@@ -158,30 +159,35 @@ impl fmt::Display for Item {
             }
             FileType::Typ => (clr!(Cyan), format!("{i} {n}", i = "", n = self.name)),
             FileType::Lua => (clr!(Blue), format!("{i} {n}", i = "", n = self.name)),
+
             // images
             FileType::Png
             | FileType::Jpg
             | FileType::Gif
             | FileType::Rw2
             | FileType::Raw => (clr!(Magenta), format!("{i} {n}", i = "", n = self.name)),
+
             // video
             FileType::Mp4
             | FileType::Mkv
             | FileType::Mov
             | FileType::Avi
             | FileType::Webm => (clr!(Magenta), format!("{i} {n}", i = "", n = self.name)),
+
             // audio
             FileType::Wav
             | FileType::Flac
             | FileType::Aif
             | FileType::Aiff
             | FileType::Mp3 => (clr!(Magenta), format!("{i} {n}", i = "", n = self.name)),
+
             // text & pdf
             FileType::Txt | FileType::Log => {
                 (clr!(White), format!("{i} {n}", i = "", n = self.name))
             }
             FileType::Md => (clr!(Magenta), format!("{i} {n}", i = "", n = self.name)),
             FileType::Pdf => (clr!(White), format!("{i} {n}", i = "", n = self.name)),
+
             // spreadsheet
             FileType::Xls
             | FileType::Xlsx
@@ -191,12 +197,14 @@ impl fmt::Display for Item {
             | FileType::Tsv
             | FileType::Ods
             | FileType::Xml => (clr!(Cyan), format!("{i} {n}", i = "󰱿", n = self.name)),
+
             // archives
             FileType::Zip
             | FileType::Tar
             | FileType::Rar
             | FileType::Gz
             | FileType::Tgz => (clr!(Orange), format!("{i} {n}", i = "", n = self.name)),
+
             // exe
             FileType::Bin
             | FileType::Run
@@ -204,6 +212,7 @@ impl fmt::Display for Item {
             | FileType::App
             | FileType::Pkg
             | FileType::Dmg => (clr!(Yellow), format!("{i} {n}", i = "󰏗", n = self.name)),
+
             // font
             FileType::Ttf | FileType::Otf => {
                 (clr!(Yellow), format!("{i} {n}", i = "", n = self.name))
@@ -216,3 +225,4 @@ impl fmt::Display for Item {
         write!(f, "{}", format::apply_color(color, content))
     }
 }
+

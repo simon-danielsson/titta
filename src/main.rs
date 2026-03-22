@@ -31,6 +31,11 @@ fn main() -> io::Result<()> {
 
     titta.get_contents()?;
 
+    // *brakoll - d: add check for if show_hidden flag is active and filter hidden directories and dotfiles, p: 100, t: refactor, s: open
+    if !titta.f_show_hidden {
+        titta.dir_items.retain(|item| !item.is_hidden);
+    }
+
     // aux cmd: ta tree
     if titta.s_view_as_tree {
         titta.s_view_as_tree()?;
@@ -49,7 +54,6 @@ struct Titta {
     opt_dir: PathBuf,
     use_opt_dir: bool,
     dir_items: Vec<Item>,
-    f_use_devicons: bool,
     f_with_color: bool,
     f_show_hidden: bool,
     f_show_executables: bool,
@@ -69,7 +73,6 @@ impl Titta {
             ),
             dir_items: Vec::new(),
             // flags
-            f_use_devicons: false,
             f_with_color: false,
             f_show_hidden: false,
             f_show_executables: false,
@@ -91,10 +94,7 @@ impl Titta {
         let col_w = self
             .dir_items
             .iter()
-            .map(|item| {
-                let icon_len = if self.f_use_devicons { 2 } else { 0 }; // char + space
-                icon_len + item.name.chars().count()
-            })
+            .map(|item| item.name.chars().count())
             .max()
             .unwrap_or(0) + 2;
 
@@ -105,24 +105,14 @@ impl Titta {
 
         // max 4 col and min 1
         let cols = (term_w / col_w).clamp(1, 4);
-        // *brakoll - d: add check for if show_hidden flag is active and filter hidden directories and dotfiles, p: 100, t: refactor, s: open
-
-        // if self.f_show_hidden == false {
-        //     if is_hidden == true {
-        //         continue;
-        //     }
-        // }
 
         // print
         for row in self.dir_items.chunks(cols) {
             for item in row {
-                let visible_len = {
-                    let icon_len = if self.f_use_devicons { 2 } else { 0 };
-                    icon_len + item.name.chars().count()
-                };
+                let visible_len = { item.name.chars().count() };
 
                 let spaces = " ".repeat(col_w.saturating_sub(visible_len));
-                print!("{}{}", item.format, spaces);
+                print!("{}{}", item, spaces);
             }
             println!();
         }
@@ -199,6 +189,7 @@ impl Titta {
         Ok(())
     }
 
+    // *brakoll - d: remove devicon flag, p: 10, t: fix, s: closed
     fn parse_args(&mut self) -> std::io::Result<()> {
         let mut it = std::env::args().skip(1); // skip program name
 
@@ -219,7 +210,6 @@ impl Titta {
                     self.s_help = true;
                     return Ok(());
                 }
-                "-i" => self.f_use_devicons = true,
                 "-w" => self.f_with_color = true,
                 "-a" => self.f_show_hidden = true,
                 "-e" => self.f_show_executables = true,
