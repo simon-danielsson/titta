@@ -13,28 +13,18 @@
 </p>
   
 <p align="center">
-  <a href="#info">Info</a> •
   <a href="#install">Install</a> •
-  <a href="#usage">Usage</a> •
+  <a href="#usage">Usage</a>
+    <br>
+  <a href="#deps">Dependencies</a> •
   <a href="#license">License</a>
 </p>  
    
 
-<!-- <p align="center"> -->
-<!--   <img src="media/1.gif" alt="screenshot"> -->
-<!-- </p> -->
-
----
-<div id="info"></div>
-
-## 📌 Information
-  
-Titta is a rust alternative to the ls unix tool.
-  
 ---
 <div id="install"></div>
 
-## 📦 Install
+## Install
     
 ``` bash
 cargo install titta
@@ -43,7 +33,7 @@ cargo install titta
 ---
 <div id="usage"></div>
 
-## 💻 Usage
+## Usage
     
 ``` bash
 $ ta <flags> <optional path>
@@ -71,7 +61,14 @@ help : view available flags, subcommands etc.
 ```
    
 ---
+<div id="deps"></div>
+  
+## Dependencies
+  
+- [terminal_size](https://github.com/eminence/terminal-size)  
+  
+---
 <div id="license"></div>
 
-## 📜 License
+## License
 This project is licensed under the [MIT License](https://github.com/simon-danielsson/titta/blob/main/LICENSE).  

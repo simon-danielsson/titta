@@ -100,37 +100,47 @@ impl Titta {
         }
     }
 
+    // *brakoll - d: make columns in print_contents function more dynamic to terminal size, p: 100, t: fix, s: closed
     fn print_contents(&mut self) {
-        let cols = 3;
+        use terminal_size::{Width, terminal_size};
 
-        let col_w: usize = (self
+        if self.dir_items.is_empty() {
+            return;
+        }
+
+        // width of the longest visible item
+        let col_w = self
             .dir_items
             .iter()
-            .map(|item| item.name.chars().count())
+            .map(|item| {
+                let icon_len = if self.f_use_devicons { 2 } else { 0 }; // char + space
+                icon_len + item.name.chars().count()
+            })
             .max()
-            .unwrap_or(0)) + 2;
+            .unwrap_or(0) + 2;
 
+        // get width, fall back 80
+        let term_w = terminal_size()
+            .map(|(Width(w), _)| w as usize)
+            .unwrap_or(80);
+
+        // max 4 col and min 1
+        let cols = (term_w / col_w).clamp(1, 4);
+
+        // print
         for row in self.dir_items.chunks(cols) {
             for item in row {
-                let len = (format!(
-                    "{icon}{name}",
-                    icon = item.icon,
-                    name = item.name
-                ))
-                    .chars()
-                    .count();
-
-                let output = {
-                    let spaces = " ".repeat(col_w.saturating_sub(len - 2));
-                    format!("{item}{spaces}", item = item.format)
+                let visible_len = {
+                    let icon_len = if self.f_use_devicons { 2 } else { 0 };
+                    icon_len + item.name.chars().count()
                 };
 
-                print!("{output}");
+                let spaces = " ".repeat(col_w.saturating_sub(visible_len));
+                print!("{}{}", item.format, spaces);
             }
             println!();
         }
     }
-
     fn is_executable(&mut self, metadata: &Metadata) -> bool {
         let permissions = metadata.permissions();
         return metadata.is_file() && permissions.mode() & 0o111 != 0;
