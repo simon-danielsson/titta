@@ -31,7 +31,7 @@ fn main() -> io::Result<()> {
 
     titta.get_contents()?;
 
-    // *brakoll - d: add check for if show_hidden flag is active and filter hidden directories and dotfiles, p: 100, t: refactor, s: open
+    // *brakoll - d: add check for if show_hidden flag is active and filter hidden directories and dotfiles, p: 100, t: refactor, s: closed
     if !titta.f_show_hidden {
         titta.dir_items.retain(|item| !item.is_hidden);
     }
