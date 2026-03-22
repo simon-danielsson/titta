@@ -80,7 +80,7 @@ white = #AAB5C0
   
 ## Dependencies
   
-- [terminal_size](https://github.com/eminence/terminal-size)  
++ [terminal_size](https://github.com/eminence/terminal-size)  
 + [raster](https://github.com/kosinix/raster)  
 + [regex](https://github.com/rust-lang/regex)  
   
