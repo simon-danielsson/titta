@@ -48,6 +48,7 @@ file_types! {
     Json => "json",
     Typ => "typ",
     Html => "html",
+    Css => "css",
 
     // === images
     Lua => "lua",
@@ -162,8 +163,9 @@ impl fmt::Display for Item {
             FileType::Toml => (clr!(Red), format!("{i} {n}", i = "", n = self.name)),
             FileType::Json => (clr!(Red), format!("{i} {n}", i = "", n = self.name)),
             FileType::Html => {
-                (clr!(Magenta), format!("{i} {n}", i = "", n = self.name))
+                (clr!(Magenta), format!("{i} {n}", i = "", n = self.name))
             }
+            FileType::Css => (clr!(Orange), format!("{i} {n}", i = "", n = self.name)),
             FileType::Typ => (clr!(Cyan), format!("{i} {n}", i = "", n = self.name)),
             FileType::Lua => (clr!(Blue), format!("{i} {n}", i = "", n = self.name)),
 

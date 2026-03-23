@@ -49,11 +49,10 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
+// *brakoll - d: make dir field of Titta struct less explicit, p: 100, t: refactor, s: closed
 /// f = flag, s = subc, sf = subc flag
 struct Titta {
-    current_dir: PathBuf,
-    opt_dir: PathBuf,
-    use_opt_dir: bool,
+    dir: PathBuf,
     dir_items: Vec<Item>,
     f_show_hidden: bool,
     s_view_as_tree: bool,
@@ -65,11 +64,7 @@ impl Titta {
     fn new() -> Self {
         Self {
             // dir
-            opt_dir: PathBuf::new(),
-            use_opt_dir: false,
-            current_dir: std::env::current_dir().expect(
-                "ERROR: The current working directory could not be identified",
-            ),
+            dir: std::env::current_dir().expect("ERROR: CWD could not be identified"),
             dir_items: Vec::new(),
 
             // flags
@@ -122,16 +117,7 @@ impl Titta {
     }
 
     fn get_contents(&mut self) -> io::Result<()> {
-        // get dir
-        let dir: PathBuf;
-        if self.use_opt_dir {
-            dir = self.opt_dir.clone();
-        } else {
-            dir = self.current_dir.clone();
-        }
-
-        // fill item vec
-        let paths = fs::read_dir(dir)?;
+        let paths = fs::read_dir(&self.dir)?;
         for path in paths {
             let mut opath = path;
             let mut f_type: FileType;
@@ -209,13 +195,13 @@ impl Titta {
                 }
                 "-a" => self.f_show_hidden = true,
                 other => {
-                    self.opt_dir = PathBuf::from(other);
-                    if self.opt_dir.exists() {
-                        self.use_opt_dir = true;
+                    let path = PathBuf::from(other);
+                    if path.exists() {
+                        self.dir = path;
                     } else {
-                        eprintln!("Directory doesn't exist!");
+                        {}
                     }
-                    break; // stop after first positional
+                    break;
                 }
             }
         }

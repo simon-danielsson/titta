@@ -7,16 +7,11 @@ impl Titta {
     pub fn s_view_as_tree(&self) -> io::Result<String> {
         let mut out = String::new();
 
-        let root = if self.use_opt_dir {
-            &self.opt_dir
-        } else {
-            &self.current_dir
-        };
-
-        let root_name = root
+        let root_name = &self
+            .dir
             .file_name()
             .map(|n| n.to_string_lossy().to_string())
-            .unwrap_or_else(|| root.display().to_string());
+            .unwrap_or_else(|| self.dir.display().to_string());
 
         out.push_str(&root_name);
         out.push('\n');
@@ -78,3 +73,4 @@ impl Titta {
         Ok(())
     }
 }
+
