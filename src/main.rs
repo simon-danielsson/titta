@@ -111,62 +111,68 @@ impl Titta {
         }
     }
 
-    fn is_executable(&mut self, metadata: &Metadata) -> bool {
-        let permissions = metadata.permissions();
-        return metadata.is_file() && permissions.mode() & 0o111 != 0;
+    fn is_executable(&self, metadata: &Metadata) -> bool {
+        metadata.is_file() && metadata.permissions().mode() & 0o111 != 0
     }
 
     fn get_contents(&mut self) -> io::Result<()> {
-        let paths = fs::read_dir(&self.dir)?;
-        for path in paths {
-            let mut opath = path;
-            let mut f_type: FileType;
+        self.dir_items.clear();
 
-            if opath.as_mut().unwrap().path().is_dir() {
-                f_type = FileType::Directory;
+        let max_depth = self.sf_tree_lvl.clamp(1, 10) as usize;
+        let root = self.dir.clone();
+
+        self.collect_contents_recursive(&root, 1, max_depth)
+    }
+
+    fn collect_contents_recursive(
+        &mut self,
+        dir: &PathBuf,
+        depth: usize,
+        max_depth: usize,
+    ) -> io::Result<()> {
+        let paths = fs::read_dir(dir)?;
+
+        for entry_result in paths {
+            let entry = entry_result?;
+            let path = entry.path();
+
+            // Use symlink_metadata so symlinks are identified correctly
+            let metadata = fs::symlink_metadata(&path)?;
+
+            let is_symlink = metadata.file_type().is_symlink();
+            let is_dir = metadata.is_dir();
+
+            let mut name = entry.file_name().to_string_lossy().to_string();
+            let is_hidden = name.starts_with('.');
+
+            let f_type = if is_dir {
+                if is_hidden {
+                    FileType::DirHidden
+                } else {
+                    FileType::Directory
+                }
             } else {
-                f_type = opath
-                    .as_mut()
-                    .unwrap()
-                    .path()
-                    .extension()
+                path.extension()
                     .and_then(|ext| ext.to_str())
                     .map(FileType::from_ext)
-                    .unwrap_or(FileType::Unknown);
+                    .unwrap_or(FileType::Unknown)
+            };
+
+            if !is_dir && self.is_executable(&metadata) && f_type == FileType::Sh {
+                name.push('*');
             }
 
-            let mut name = opath.as_mut().unwrap().file_name().display().to_string();
-
-            // *brakoll - d: remove need for is_exec field, p: 20, t: refactor, s: closed
-            let mut is_symlink: bool = false;
-
-            if let Ok(metadata) = opath.as_mut().unwrap().metadata() {
-                if self.is_executable(&metadata) && f_type == FileType::Sh {
-                    name = format!("{name}*");
-                }
-
-                is_symlink = metadata.is_symlink();
-            }
-
-            let mut is_hidden = false;
-
-            if f_type == FileType::Directory && name.chars().nth(0) == Some('.') {
-                f_type = FileType::DirHidden;
-                is_hidden = true;
-            }
-
-            if f_type != FileType::Directory && name.chars().nth(0) == Some('.') {
-                is_hidden = true;
-            }
-
-            // push
             self.dir_items.push(Item {
                 f_type,
                 is_symlink,
                 is_hidden,
                 name,
-                abs_path: opath.as_mut().unwrap().path(),
+                abs_path: path.clone(),
             });
+
+            if is_dir && depth < max_depth {
+                self.collect_contents_recursive(&path, depth + 1, max_depth)?;
+            }
         }
 
         Ok(())

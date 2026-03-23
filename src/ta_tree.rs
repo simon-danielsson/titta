@@ -1,25 +1,24 @@
 use crate::attributes::FileType;
 use crate::{Item, Titta};
 use std::io;
+use std::path::Path;
 
-// *brakoll - d: overhaul tree generation to minimize duplicate code, p: 100, t: refactor, s: closed
+// *brakoll - d: tree subc not working properly. must be that the dir_items vec is not being generated recursively in main.rs, p: 100, t: refactor, s: closed
 impl Titta {
     pub fn s_view_as_tree(&self) -> io::Result<String> {
         let mut out = String::new();
 
-        let root_name = &self
-            .dir
-            .file_name()
+        let root_name =
+        self.dir.file_name()
             .map(|n| n.to_string_lossy().to_string())
             .unwrap_or_else(|| self.dir.display().to_string());
 
         out.push_str(&root_name);
         out.push('\n');
 
-        let mut items = self.dir_items.clone();
-        items.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
-
         let max_depth = self.sf_tree_lvl.max(1) as usize;
+
+        let items = self.sorted_children_of(&self.dir);
 
         for (idx, item) in items.iter().enumerate() {
             let is_last = idx + 1 == items.len();
@@ -28,6 +27,7 @@ impl Titta {
 
         Ok(out)
     }
+
     fn write_tree_item(
         &self,
         item: &Item,
@@ -49,9 +49,7 @@ impl Titta {
         }
 
         if matches!(item.f_type, FileType::Directory | FileType::DirHidden) {
-            let mut children = self.dir_items.clone();
-
-            children.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+            let children = self.sorted_children_of(&item.abs_path);
 
             let next_prefix =
             format!("{prefix}{}", if is_last { "    " } else { "│   " });
@@ -72,5 +70,15 @@ impl Titta {
 
         Ok(())
     }
-}
 
+    fn sorted_children_of(&self, parent: &Path) -> Vec<&Item> {
+        let mut children: Vec<&Item> = self
+            .dir_items
+            .iter()
+            .filter(|item| item.abs_path.parent() == Some(parent))
+            .collect();
+
+        children.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+        children
+    }
+}
